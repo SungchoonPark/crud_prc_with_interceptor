@@ -1,5 +1,7 @@
 package org.choon.crudprc.member.service;
 
+import org.choon.crudprc.exception.LoginException;
+import org.choon.crudprc.exception.UserException;
 import org.choon.crudprc.member.dto.req.LoginReqDto;
 import org.choon.crudprc.member.dto.resp.LoginRespDto;
 import org.choon.crudprc.member.dto.resp.MeRespDto;
@@ -20,10 +22,10 @@ public class MemberService {
 
     public LoginRespDto login(LoginReqDto loginReqDto) {
         Member member = memberRepository.findByUsername(loginReqDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("로그인 실패!!"));
+                .orElseThrow(() -> new LoginException("로그인 실패!!"));
 
         if (!member.getPassword().equals(loginReqDto.getPassword())) {
-            throw new RuntimeException("로그인 실패!!");
+            throw new LoginException("로그인 실패!!");
         }
 
         String accessToken = jwtProvider.createToken(member.getName());
@@ -32,7 +34,7 @@ public class MemberService {
 
     public MeRespDto profile(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("이런 멤버 없다"));
+                .orElseThrow(() -> new UserException("이런 멤버 없다"));
 
         return MeRespDto.from(member);
     }

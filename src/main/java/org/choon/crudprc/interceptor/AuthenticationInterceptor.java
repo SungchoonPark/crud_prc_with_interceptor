@@ -2,6 +2,7 @@ package org.choon.crudprc.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.choon.crudprc.annotation.NoAuth;
+import org.choon.crudprc.exception.TokenException;
 import org.choon.crudprc.util.JwtProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.HandlerMethod;
@@ -30,12 +31,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         System.out.println("token = " + token);
 
         if (token == null || token.isEmpty()) {
-            throw new RuntimeException("토큰 없다!!");
+            throw new TokenException("토큰 없다!!");
         }
 
         String resolveToken = jwtProvider.resolveToken(token);
         if (!jwtProvider.validateToken(resolveToken)) {
-            throw new RuntimeException("토큰 만료됨!!");
+            throw new TokenException("토큰 만료됨!!");
         }
 
         return true;
@@ -43,9 +44,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private boolean checkAnnotation(Object handler, Class cls) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        if(handlerMethod.getMethodAnnotation(cls)!=null) {
-            return true;
-        }
-        return false;
+        return handlerMethod.getMethodAnnotation(cls) != null;
     }
 }

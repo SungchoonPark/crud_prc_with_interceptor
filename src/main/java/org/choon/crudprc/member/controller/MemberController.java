@@ -5,6 +5,7 @@ import org.choon.crudprc.member.dto.req.LoginReqDto;
 import org.choon.crudprc.member.dto.resp.LoginRespDto;
 import org.choon.crudprc.member.dto.resp.MeRespDto;
 import org.choon.crudprc.member.service.MemberService;
+import org.choon.crudprc.util.ApiUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,14 @@ public class MemberController {
 
     @PostMapping("/login")
     @NoAuth
-    public ResponseEntity<LoginRespDto> login(@RequestBody LoginReqDto loginReqDto) {
+    public ApiUtils.ApiResult<LoginRespDto> login(@RequestBody LoginReqDto loginReqDto) {
         LoginRespDto resp = memberService.login(loginReqDto);
-        return ResponseEntity.ok().body(resp);
+        return ApiUtils.success(resp);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MeRespDto> profile(@RequestParam Long id) {
+    public ApiUtils.ApiResult<MeRespDto> profile(@RequestParam Long id) {
         MeRespDto resp = memberService.profile(id);
-        return ResponseEntity.ok().body(resp);
+        return ApiUtils.success(resp);
     }
 }
